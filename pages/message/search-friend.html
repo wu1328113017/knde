@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>厨房妈妈</title>
+		<meta name="description" content="厨房妈妈" />
+		<meta name="keywords" content="厨房妈妈" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" href="../../css/amazeui.min.css" />
+		<link rel="stylesheet" href="../../css/style.css" />
+		<link rel="stylesheet" href="../../plug-in-unit/layui-v2.5.5/layui/css/layui.css" />
+		<link rel="stylesheet" href="../../css/page.css" />
+	</head>
+	<body>
+		<header class="search-header" id="search-friend">
+			<input type="text" placeholder="用户名/手机号" v-model="keywords" v-on:keyup="search">
+		</header>
+		<section>
+			<div id="user-list">
+				<template v-for="user in users">
+					<div class="user" onclick="user_info(this)" v-bind:data-id = "user.userId">
+						<template v-if="user.icon != null">
+							<img v-bind:src="user.icon" />
+						</template>
+						<template v-else>
+							<img src="../../images/default_photo.png" />
+						</template>
+						<div>
+							<template v-if="user.username != null">
+								<p>{{ user.username }}</p>
+							</template>
+							<template v-else>
+								<p>无名</p>
+							</template>
+							<p>{{ user.phone }}</p>
+							<!-- <a><img src="../../images/icon_add.png"></a> -->
+						</div>
+						<!-- <a><img src="../../images/icon_add.png"></a> -->
+					</div>
+				</template>
+			</div>
+		</section>
+	</body>
+	<script src="../../js/jquery.min.js"></script>
+	<script src="../../js/jquery.cookie.js"></script>
+	<script src="../../js/config.js"></script>
+	<script src="../../vue/vue.js"></script>
+	<script src="../../vue/axios.min.js"></script>
+	<script src="../../js/windowOpen.js"></script>
+	<script>
+		var search_friend = new Vue({
+			el: "#search-friend",
+			data: {
+				keywords: '',
+				keywords1: '',
+				pageNo: 0,
+				pageSize: 7
+			},
+			methods: {
+				search: function() {
+					if ($.trim(this.keywords) != '' && $.trim(this.keywords) != $.trim(this.keywords1)) {
+						this.keywords1 = this.keywords;
+						this.pageNo = 0;
+						this.pageSize = 7;
+						var params = new URLSearchParams();
+						params.append('keywords', this.keywords);
+						params.append('pageNo', this.pageNo);
+						params.append('pageSize', this.pageSize);
+						axios.post('/knde/user/searchUsers', params, {
+							headers: {
+								'token': token
+							}
+						}).then(function(response) {
+							var result = response.data;
+							if (result.status != 0) {
+								if(result.status == 405){
+									var ack = function(){
+										window.location.href = 'login.html';
+									}
+									$(this).openWindow('提示', result.message, '["确定"]',{
+										ack: ack
+									});
+								}
+								return;
+							}
+							users.$data.users = result.data.records;
+						}).catch(function() {
+							$(this).openWindow('提示', '服务异常，请稍后再试', '["确定"]',{
+										ack: function(){
+										window.location.href = '../../login.html';
+									}
+									});
+							
+						});
+					}
+				}
+			}
+		});
+		var users = new Vue({
+			el: "#user-list",
+			data: {
+				users: ''
+			}
+		});
+		//监听页面是否滚动到底部
+		$(window).scroll(function() {
+			// scroll at bottom
+			if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+				// load data
+				search_friend.$data.pageNo ++;
+				var params = new URLSearchParams();
+				params.append('keywords', search_friend.$data.keywords);
+				params.append('pageNo', search_friend.$data.pageNo);
+				params.append('pageSize', search_friend.$data.pageSize);
+				axios.post('/knde/user/searchUsers', params, {
+					headers: {
+						'token': token
+					}
+				}).then(function(response) {
+					var result = response.data;
+					if (result.status != 0) {
+				
+						return;
+					}
+					var datas = result.data.records;
+					for(var k in datas){
+						users.$data.users.push(datas[k]);
+					}
+				}).catch(function() {
+					$(this).openWindow('提示', '服务异常，请稍后再试', '["确定"]',{
+								ack: function(){
+								window.location.href = '../../login.html';
+							}
+							});
+				});
+			}
+		});
+		function user_info(obj){
+			window.location.href = "user-info.html?id="+$(obj).attr("data-id");
+		}
+	</script>
+</html>

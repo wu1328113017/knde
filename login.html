@@ -1,0 +1,260 @@
+<!doctype html>
+<html class="no-js">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>登录</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+		<link rel="stylesheet" href="css/amazeui.min.css">
+		<link rel="stylesheet" href="css/app.css">
+		<link rel="stylesheet" href="css/page.css" />
+	</head>
+	<body>
+		<div class="am-g myapp-login">
+			<div class="myapp-login-logo-block">
+				<div class="myapp-login-logo">
+					<i class="am-icon-jsfiddle"></i>
+				</div>
+				<div class="myapp-login-logo-text">
+					<div class="myapp-login-logo-text">
+						柯<span>南道尔</span>
+						<div class="info">Find the best places in town.</div>
+					</div>
+				</div>
+				<div id="app">
+					<div class="login-font">
+						<span v-bind:class="{'login':login}" v-on:click="login1">登录 </span> 或 <span v-bind:class="{'login':!login}"
+						 v-on:click="error"> 注册</span>
+					</div>
+					<div v-bind:class="{'am-hide':!login}">
+						<div class="am-u-sm-10 login-am-center">
+							<div class="am-form">
+								<fieldset>
+									<div class="am-form-group">
+										<input type="text" onblur="xz(this)" onfocus="qxxz(this)" placeholder="输入用户名\手机号码" v-model="voucher">
+									</div>
+
+									<div class="am-form-group">
+										<input type="password" onblur="xz(this)" onfocus="qxxz(this)" placeholder="输入密码" v-model="password">
+									</div>
+									<p><button class="am-btn am-btn-default" v-on:click="login_event">登录</button></p>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+					<div v-bind:class="{'am-hide':login}">
+						<div class="am-u-sm-10 login-am-center">
+							<div class="am-form">
+								<fieldset>
+									<div class="am-form-group">
+										<input type="text" onblur="xz(this)" onfocus="qxxz(this)" placeholder="输入手机号码" id="phone">
+									</div>
+
+									<div class="am-form-group">
+										<input type="text" onblur="xz(this)" onfocus="qxxz(this)" placeholder="输入验证码" class="sryzm" id="yzm">
+										<button v-bind:class="{'am-btn am-btn-default fsyzm':true,'huise':!isSend}" v-on:click="sendYZM">{{s+hqyzm}}</button>
+									</div>
+									<p><button class="am-btn am-btn-default" v-on:click="completeRegister">注册</button></p>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<!--[if (gte IE 9)|!(IE)]><!-->
+	<script src="vue/vue.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="vue/axios.min.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/windowOpen.js"></script>
+	<script src="js/jquery.cookie.js"></script>
+	<script src="js/config.js"></script>
+	<script></script>
+	<!--<![endif]-->
+	<!--[if lte IE 8 ]>
+<script src="js/jquery.1.11.3.min.js"></script>
+<script src="js/modernizr.js"></script>
+<script src="js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+	<script>
+		function xz(obj) {
+			$(obj).addClass('white');
+			$(obj).removeClass('black');
+		}
+
+		function qxxz(obj) {
+			$(obj).addClass('black');
+			$(obj).removeClass('white');
+		}
+		var vue = new Vue({
+			el: "#app",
+			data: {
+				login: true,
+				hqyzm: "获取验证码",
+				isSend: true,
+				timeour: '',
+				s: '',
+				voucher: '',
+				password: ''
+			},
+			methods: {
+				login1: function() {
+					this.login = true;
+				},
+				error: function() {
+					this.login = false;
+				},
+				sendYZM: function() {
+					var v = this;
+					if (v.isSend) {
+						var phone = $("#phone").val();
+						if (phone && checkPhone(phone)) {
+							var params = new URLSearchParams();
+							params.append('phone', phone);
+							axios.post('/knde/register/getVerificationCode', params)
+								.then(function(response) {
+									var result = response.data;
+									$(this).openWindow('提示', result.message, '["确定"]');
+									if(result.status != 0){
+										
+										return;
+									}
+									v.isSend = false;
+									v.s = 60;
+									v.hqyzm = 's';
+									v.timeour = setInterval(v.get, 1000);
+								}).catch(function(error) {
+									$(this).openWindow('提示', '服务异常，请稍后再试', '["确定"]');
+								});
+						} else {
+							var tishi = '';
+							if(!phone){
+								tishi = '请填写手机号码';
+							}else if(!checkPhone(phone)){
+								tishi = '手机号码格式有误';
+							}
+							$(this).openWindow('提示', tishi, '["确定"]');
+						}
+					}
+				},
+				get: function() {
+					if (this.s > 0) {
+						this.s--;
+					} else {
+						clearInterval(this.timeour);
+						this.isSend = true;
+						this.s = '';
+						this.hqyzm = '获取验证码';
+					}
+				},
+				completeRegister: function() {
+					var yzm = $("#yzm").val();
+					var phone = $("#phone").val();
+					if (phone && checkPhone(phone) && yzm) {
+						var params = new URLSearchParams();
+						params.append('phone', phone);
+						params.append('code', yzm);
+						axios.post('/knde/register/completeRegister', params)
+							.then(function(response) {
+								var result = response.data;
+								//请求失败执行的函数
+								var ack;
+								if(result.status != 0){
+									$(this).openWindow('提示', result.message, '["确定"]');
+									return;
+								}
+								//将返回的token保存在cookie里面
+								$.cookie('token',result.data);
+								//请求成功执行的函数
+								ack = function(){
+									//获取用户信息
+									var token = result.data;
+									axios.get("/knde/user/getUser", {
+										headers: {
+											'token': token
+										}
+									}).then(function(response) {
+										localStorage.setItem('userInfo',JSON.stringify(response.data.data));
+									}).catch(function(error) {
+										$(this).openWindow('提示', '服务异常，请稍后再试', '["确定"]');
+									});
+									window.location.href = 'index.html';
+								}
+								$(this).openWindow('提示', result.message, '["确定"]',{
+									ack: ack
+								});
+								
+							}).catch(function(error) {
+								$(this).openWindow('提示', '服务异常，请稍后再试', '["确定"]');
+							});
+					}else{
+						var tishi = '';
+						if(!phone){
+							tishi = '请填写手机号码';
+						}else if(!checkPhone(phone)){
+							tishi = '手机号码格式有误';
+						}else if(!yzm){
+							tishi = '请填写验证码';
+						}
+						$(this).openWindow('提示', tishi, '["确定"]');
+					}
+				},
+				login_event: function(){
+					if(this.voucher && this.password){
+						var params = new URLSearchParams();
+						params.append('voucher', this.voucher);
+						params.append('password', this.password);
+						axios.post('/knde/login/login',params)
+						.then(function(response){
+							var result = response.data;
+							//请求失败执行的函数
+							var ack;
+							if(result.status != 0){
+								
+								return;
+							}
+							//将返回的token保存在cookie里面
+							$.cookie('token',result.data);
+							//请求成功执行的函数
+							ack = function(){
+								//获取用户信息
+								var token = result.data;
+								axios.get("/knde/user/getUser", {
+									headers: {
+										'token': token
+									}
+								}).then(function(response) {
+									localStorage.setItem('userInfo',JSON.stringify(response.data.data));
+								}).catch(function(error) {
+									$(this).openWindow('提示', '服务异常，请稍后再试', '["确定"]');
+								});
+								window.location.href = 'index.html';
+							}
+							$(this).openWindow('提示', result.message, '["确定"]',{
+								ack: ack
+							});
+						})
+						.catch(function(error){
+							$(this).openWindow('提示', '服务异常，请稍后再试', '["确定"]');
+						});
+					}else{
+						var tishi = '';
+						if(!this.voucher){
+							tishi = '请填写用户名/手机号码';
+						}else if(!this.password){
+							tishi = '请填写密码';
+						}
+						$(this).openWindow('提示', tishi, '["确定"]');
+					}
+				}
+			}
+		})
+	</script>
+</html>

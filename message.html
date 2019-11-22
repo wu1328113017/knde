@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>厨房妈妈</title>
+		<meta name="description" content="厨房妈妈" />
+		<meta name="keywords" content="厨房妈妈" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" href="css/amazeui.min.css" />
+		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/page.css" />
+		<link rel="stylesheet" href="plug-in-unit/layui-v2.5.5/layui/css/layui.css" />
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/amazeui.min.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div data-am-widget="slider" class="am-slider am-slider-default" data-am-slider='{}'>
+				<ul class="am-slides">
+					<li><img src="images/banner3.png"> </li>
+					<li><img src="images/banner4.png"> </li>
+				</ul>
+			</div>
+			<ul class="nav">
+				<li v-bind:class="{'message-nav-active':message_message}">
+					<a href="javascript:void(0)" v-on:click="message1">
+						<img v-bind:src="message_img" />
+						<p>消息</p>
+					</a>
+				</li>
+				<li v-bind:class="{'message-nav-active':message_friend}">
+					<a href="javascript:void(0)" v-on:click="friend">
+						<img v-bind:src="friend_img" />
+						<p>好友列表</p>
+					</a>
+				</li>
+				<li v-bind:class="{'message-nav-active':message_lxr}">
+					<a href="javascript:void(0)" v-on:click="lxr">
+						<img v-bind:src="lxr_img" />
+						<p>联系人</p>
+					</a>
+				</li>
+				<li v-bind:class="{'message-nav-active':message_pyq}">
+					<a href="javascript:void(0)" v-on:click="pyq">
+						<img v-bind:src="pyq_img" />
+						<p>朋友圈</p>
+					</a>
+				</li>
+			</ul>
+			<div data-am-widget="intro" class="am-intro am-cf am-intro-default">
+				<div class="am-intro-hd">
+					<h2 class="am-intro-title">{{message}}<span class="fr addFriend" v-on:click="addFriend" v-show="message_friend"><img src="images/icon_add.png"/></span></h2>
+				</div>
+				<div v-bind:class="{'am-hide':!addFriend_on,'addFriend_window':true}">
+					<div v-bind:class="{'am-hide':!addFriend_on,'triangle-up':true}">
+					</div>
+					<ul>
+						<li>
+							<a href="pages/message/search-friend.html"><img src="images/icon_search.png" /><span>搜索好友</span></a>
+						</li>
+						<li>
+							<img src="images/icon_scan.png" /><span>扫一扫</span>
+						</li>
+					</ul>
+				</div>
+				<div class="am-g am-intro-bd">
+					<a href="content.html">
+						<div class="am-intro-left am-u-sm-3"><img src="images/p.png" /></div>
+						<div class="am-intro-right am-u-sm-9">
+							<h2>五种果汁喝出美丽</h2>
+							<p>吐血推荐5款让你喝出健康的果汁</p>
+							<div class="text">
+								<span class="fl">2017-5-23</span>
+								<span class="fr"><i class="am-icon-thumbs-o-up"></i>&nbsp;点赞</span>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="am-g am-intro-bd">
+					<a href="content.html">
+						<div class="am-intro-left am-u-sm-3"><img src="images/p.png" /></div>
+						<div class="am-intro-right am-u-sm-9">
+							<h2>五种果汁喝出美丽</h2>
+							<p>吐血推荐5款让你喝出健康的果汁</p>
+							<div class="text">
+								<span class="fl">2017-5-23</span>
+								<span class="fr"><i class="am-icon-thumbs-o-up"></i>&nbsp;点赞</span>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="am-g am-intro-bd">
+					<a href="content.html">
+						<div class="am-intro-left am-u-sm-3"><img src="images/p.png" /></div>
+						<div class="am-intro-right am-u-sm-9">
+							<h2>五种果汁喝出美丽</h2>
+							<p>吐血推荐5款让你喝出健康的果汁</p>
+							<div class="text">
+								<span class="fl">2017-5-23</span>
+								<span class="fr"><i class="am-icon-thumbs-o-up"></i>&nbsp;点赞</span>
+							</div>
+						</div>
+					</a>
+				</div>
+				<div class="am-g am-intro-bd">
+					<a href="content.html">
+						<div class="am-intro-left am-u-sm-3"><img src="images/p.png" /></div>
+						<div class="am-intro-right am-u-sm-9">
+							<h2>五种果汁喝出美丽</h2>
+							<p>吐血推荐5款让你喝出健康的果汁</p>
+							<div class="text">
+								<span class="fl">2017-5-23</span>
+								<span class="fr"><i class="am-icon-thumbs-o-up"></i>&nbsp;点赞</span>
+							</div>
+						</div>
+					</a>
+				</div>
+
+
+			</div>
+			<div class="h50"></div>
+			<div data-am-widget="navbar" class="am-navbar am-cf am-navbar-default footer " id="">
+				<ul class="am-navbar-nav am-cf am-avg-sm-4">
+					<li>
+						<a href="index.html" class="">
+							<span class=""><i class="layui-icon layui-icon-home foot-nav"></i></span>
+							<span class="am-navbar-label">首页</span>
+						</a>
+					</li>
+					<li>
+						<a href="we.html" class="">
+							<span class=""><i class="layui-icon layui-icon-star foot-nav"></i></span>
+							<span class="am-navbar-label">推荐</span>
+						</a>
+					</li>
+					<li>
+						<a href="message.html" class="">
+							<span class=""><i class="layui-icon layui-icon-dialogue foot-nav foot-nav-active"></i></span>
+							<span class="am-navbar-label foot-nav-active">消息</span>
+						</a>
+					</li>
+					<li>
+						<a href="member.html" class="">
+							<span class=""><i class="layui-icon layui-icon-username foot-nav"></i></span>
+							<span class="am-navbar-label">我的</span>
+						</a>
+					</li>
+
+				</ul>
+			</div>
+			<div v-bind:class="{'window-masking':addFriend_on}" style="display: block;opacity: 0;" v-on:click="cancel_addFriend">
+		</div>
+		</div>
+	</body>
+	<script src="vue/vue.js"></script>
+	<script src="vue/axios.min.js"></script>
+	<script src="js/jquery.cookie.js"></script>
+	<script src="js/app.js"></script>
+	<script>
+		new Vue({
+					el: "#app",
+					data: {
+						message: '消息',
+						message_img: 'images/icon_message2.png',
+						friend_img: 'images/icon_group.png',
+						lxr_img: 'images/icon_scan_namecard.png',
+						pyq_img: 'images/icon_affiliations_li.png',
+						message_message: true,
+						message_friend: false,
+						message_lxr: false,
+						message_pyq: false,
+						addFriend_on: false
+					},
+					methods: {
+
+						message1: function() {
+							this.message = '消息';
+							this.message_img = 'images/icon_message2.png';
+							this.message_message = true;
+							this.friend_img = 'images/icon_group.png';
+							this.message_friend = false;
+							this.lxr_img = 'images/icon_scan_namecard.png';
+							this.message_lxr = false;
+							this.pyq_img = 'images/icon_affiliations_li.png';
+							this.message_pyq = false;
+						},
+						friend: function() {
+							this.message = '好友列表';
+							this.friend_img = 'images/icon_group2.png';
+							this.message_friend = true;
+							this.message_img = 'images/icon_message.png';
+							this.message_message = false;
+							this.lxr_img = 'images/icon_scan_namecard.png';
+							this.message_lxr = false;
+							this.pyq_img = 'images/icon_affiliations_li.png';
+							this.message_pyq = false;
+						},
+						lxr: function() {
+							this.message = '联系人';
+							this.lxr_img = 'images/icon_scan_namecard2.png';
+							this.message_lxr = true;
+							this.message_img = 'images/icon_message.png';
+							this.message_message = false;
+							this.pyq_img = 'images/icon_affiliations_li.png';
+							this.message_pyq = false;
+							this.friend_img = 'images/icon_group.png';
+							this.message_friend = false;
+						},
+						pyq: function() {
+							this.message = '朋友圈';
+							this.pyq_img = 'images/icon_affiliations_li2.png';
+							this.message_pyq = true;
+							this.message_img = 'images/icon_message.png';
+							this.message_message = false;
+							this.friend_img = 'images/icon_group.png';
+							this.message_friend = false;
+							this.lxr_img = 'images/icon_scan_namecard.png';
+							this.message_lxr = false;
+						},
+						addFriend: function() {
+							this.addFriend_on = true;
+						},
+						cancel_addFriend: function() {
+							/* var sp = document.getElementById("myPanel");
+							var sp2 = document.getElementById("myPanel2");
+							if (sp) {
+								if (!sp.contains(event.target) && !sp2.contains(event.target)) { */ //这句是说如果我们点击到了id为myPanel和id为myPanel2以外的区域
+									this.addFriend_on = false;
+								/* }
+							} */
+						},
+						}
+					})
+	</script>
+</html>

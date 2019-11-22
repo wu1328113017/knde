@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>厨房妈妈</title>
+		<meta name="description" content="厨房妈妈" />
+		<meta name="keywords" content="厨房妈妈" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" href="../../css/amazeui.min.css" />
+		<link rel="stylesheet" href="../../css/style.css" />
+		<link rel="stylesheet" href="plug-in-unit/layui-v2.5.5/layui/css/layui.css" />
+		<link rel="stylesheet" href="../../css/page.css" />
+		<script type="text/javascript" src="../../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../../js/amazeui.min.js"></script>
+	</head>
+	<body style="background: #FFFFFF;">
+		<!-- <div data-am-widget="slider" class="am-slider am-slider-default" data-am-slider='{}' >
+			  <ul class="am-slides">
+			      <li><img src="../../images/banner3.png"> </li>
+			      <li><img src="../../images/banner4.png"> </li>
+			  </ul> 
+		</div> -->
+		<div id="app">
+			<div class="user-header">
+				<img v-bind:src="icon">
+				<div>
+					<p>{{username}}</p>
+					<p>{{phone}}</p>
+				</div>
+			</div>
+			<div class="am-tabs qiehuan" data-am-tabs>
+				<ul class="am-tabs-nav am-nav am-nav-tabs">
+					<li class="am-active"><a href="#tab1">简单介绍</a></li>
+					<li><a href="#tab2">详细信息</a></li>
+				</ul>
+				<div class="am-tabs-bd">
+					<div class="am-tab-panel am-fade am-in am-active" id="tab1">
+						<div class="brief-introduction">
+							<p>性别:&nbsp;&nbsp;{{sex}}</p>
+							<p>年龄:&nbsp;&nbsp;{{age}}</p>
+							<p>生日:&nbsp;&nbsp;{{brithday}}</p>
+							<p>爱好:&nbsp;&nbsp;{{love}}</p>
+						</div>
+					</div>
+					<div class="am-tab-panel am-fade" id="tab2">
+
+					</div>
+
+				</div>
+			</div>
+			<div class="user-foot">
+				<a class="add-friend">+添加好友</a>
+			</div>
+		</div>
+	</body>
+	<script src="../../vue/vue.js"></script>
+	<script src="../../vue/axios.min.js"></script>
+	<script src="../../js/app.js"></script>
+	<script src="../../js/windowOpen.js"></script>
+	<script src="../../js/jquery.cookie.js"></script>
+	<script src="../../js/config.js"></script>
+	<script>
+		var user_info = new Vue({
+			el: "#app",
+			data: {
+				sex: '暂未填写',
+				age: '暂未填写',
+				brithday: '暂未填写',
+				love: '暂未填写',
+				username: '暂未填写',
+				phone: '暂未填写',
+				icon: '../../images/default_photo.png'
+			}
+		});
+		var params = new URLSearchParams();
+		params.append('userId', getQueryVariable('id'));
+		axios.post('/knde/user/userInfo', params, {
+			headers: {
+				'token': token
+			}
+		}).then(function(response) {
+			var result = response.data;
+			if (result.status != 0) {
+				return;
+			}
+			var data = result.data;
+			for (var k in user_info.$data) {
+				if (data[k]) {
+					if(k == 'sex'){
+						user_info.$data[k] = data[k] == 0?'男':data[k] == 1?'女':'未知'
+						continue;
+					}
+					user_info.$data[k] = data[k];
+				}
+			}
+		}).catch(function(error) {
+			$(this).openWindow('提示', '服务异常，请稍后再试', '["确定"]');
+		});
+	</script>
+</html>
